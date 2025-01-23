@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanning</title>
+</head>
+<body>
+    <h1>Live Scanning</h1>
+    <div>
+        <img src="/video_feed" alt="Video Stream">
+    </div>
+    <div id="body-dimensions">
+        <!-- 实时身体维度数据将显示在这里 -->
+        <p>Loading body dimensions...</p>
+    </div>
+
+    <script>
+        async function fetchBodyDimensions() {
+            try {
+                const response = await fetch('/get_body_dimensions');
+                const data = await response.json();
+                const dimensionsDiv = document.getElementById('body-dimensions');
+                dimensionsDiv.innerHTML = ''; // 清空内容
+                for (const [key, value] of Object.entries(data)) {
+                    const p = document.createElement('p');
+                    p.textContent = `${key}: ${value}`;
+                    dimensionsDiv.appendChild(p);
+                }
+            } catch (error) {
+                console.error('Error fetching body dimensions:', error);
+            }
+        }
+
+        // 定期更新数据，每500毫秒请求一次
+        setInterval(fetchBodyDimensions, 500);
+    </script>
+</body>
+</html>
+
